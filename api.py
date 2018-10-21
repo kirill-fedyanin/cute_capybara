@@ -46,18 +46,20 @@ def main():
     )
 
 
+def button():
+    return {
+        "text": "Mi-mi-mi",
+        "url": "http://fedyanin.me/",
+        "payload": {}
+    }
+
 def handle_dialog(req, res):
     print(req)
     card = {
         "type": "BigImage",
-        "image_id": "1027858/46r960da47f60207e924",
-        "title": "Заголовок для изображения",
-        "description": "Описание изображения.",
-        "button": {
-            "text": "Надпись на кнопке",
-            "url": "http://example.com/",
-            "payload": {}
-        }
+        "image_id": "965417/d8a1988af5c2a38ba693",
+        "title": "Capybara",
+        "description": "Can you find someone more cute?",
     }
 
     res['response']['text'] = 'You are cute!'

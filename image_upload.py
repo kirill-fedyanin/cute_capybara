@@ -10,6 +10,18 @@ headers = {
     'Authorization': f'OAuth {o_auth}'
 }
 
+def upload_by_link(link):
+    path = f'skills/{skill_id}/images'
+    headers['Content-Type'] = 'application/json'
+    data = {'url': link}
+    print(data)
+    print(headers)
+    print(base_url + path)
+    r = requests.post(base_url + path, data=data, headers=headers)
+    print(r)
+    print(r.text)
+
+upload_by_link(img_name)
 
 def get_status():
     path = 'status'
@@ -18,7 +30,6 @@ def get_status():
     print(r.text)
 
 
-get_status()
 
 # for line in lines:
 #     word = line.split()[0]
