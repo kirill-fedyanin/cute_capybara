@@ -20,30 +20,7 @@ sessionStorage = {}
 def hello_world():
     return 'Diana is cute developer ^_^'
 
-# Задаем параметры приложения Flask.
-@app.route("/", methods=['POST'])
 
-def main():
-# Функция получает тело запроса и возвращает ответ.
-    logging.info('Request: %r', request.json)
-
-    response = {
-        "version": request.json['version'],
-        "session": request.json['session'],
-        "response": {
-            "end_session": False
-        }
-    }
-
-    handle_dialog(request.json, response)
-
-    logging.info('Response: %r', response)
-
-    return json.dumps(
-        response,
-        ensure_ascii=False,
-        indent=2
-    )
 
 
 def button():
@@ -53,6 +30,58 @@ def button():
         "payload": {}
     }
 
+class BabyStorage:
+    def __init__(self):
+        self.storage = [
+            {
+                'name': 'капибара',
+                "image_id": "965417/d8a1988af5c2a38ba693",
+                'level': 1
+            },
+            {
+                'name': 'бобер',
+                'image_id': '965417/e509419a31cfecf7ff5a',
+                'level': 1
+            }
+        ]
+
+
+class Master:
+    def __init__(self):
+        pass
+
+    def _make_card(self):
+        pass
+
+
+class Requester:
+    def __init__(self):
+        pass
+
+    def make_request(self):
+        pass
+
+    def parse(self):
+        response = {
+            "version": request.json['version'],
+            "session": request.json['session'],
+            "response": {
+                "end_session": False
+            }
+        }
+
+        handle_dialog(request.json, response)
+
+        logging.info('Response: %r', response)
+
+        return json.dumps(
+            response,
+            ensure_ascii=False,
+            indent=2
+        )
+
+
+
 def handle_dialog(req, res):
     print(req)
     card = {
@@ -61,10 +90,28 @@ def handle_dialog(req, res):
         "title": "Capybara",
         "description": "Can you find someone more cute?",
     }
+    # if req['request']['original_utterance'].lower() in [
+    #     'ладно',
+    #     'куплю',
+    #     'покупаю',
+    #     'хорошо',
+    # ]:
+
 
     res['response']['text'] = 'You are cute!'
     res['response']['card'] = card
     return
+
+requester = Requester()
+
+# Задаем параметры приложения Flask.
+@app.route("/", methods=['POST'])
+def main():
+# Функция получает тело запроса и возвращает ответ.
+#     logging.info('Request: %r', request.json)
+
+    response = requester.parse()
+    return response
 
 
 
