@@ -21,8 +21,6 @@ def hello_world():
     return 'Diana is cute developer ^_^'
 
 
-
-
 def button():
     return {
         "text": "Mi-mi-mi",
@@ -50,13 +48,24 @@ class Master:
     def __init__(self):
         pass
 
-    def _make_card(self):
-        pass
+    def reply(self, request_json, response):
+        card = self._make_card("965417/d8a1988af5c2a38ba693")
+        response['response']['text'] = 'You are cute!'
+        response['response']['card'] = card
+
+
+    def _make_card(self, image_id):
+        return {
+            "type": "BigImage",
+            "image_id": image_id,
+            "title": "Capybara",
+            "description": "Can you find someone more cute?",
+        }
 
 
 class Requester:
     def __init__(self):
-        pass
+        self.master = Master()
 
     def make_request(self):
         pass
@@ -70,9 +79,8 @@ class Requester:
             }
         }
 
-        handle_dialog(request.json, response)
-
-        logging.info('Response: %r', response)
+        self.master.reply(request.json, response)
+        # handle_dialog(request.json, response)
 
         return json.dumps(
             response,
@@ -109,10 +117,12 @@ requester = Requester()
 def main():
 # Функция получает тело запроса и возвращает ответ.
 #     logging.info('Request: %r', request.json)
-
     response = requester.parse()
     return response
 
+
+if __name__ == "__main__":
+    app.run(host='0.0.0.0')
 
 
 #
