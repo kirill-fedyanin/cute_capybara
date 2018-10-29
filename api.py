@@ -43,15 +43,14 @@ class Master:
 
     def reply(self, req):
         img_id = "965417/d8a1988af5c2a38ba693"
-        print(req)
-        # if req['session']['new']:
-        text = self.texts.get_start()
-        # else:
-        #     text = self.texts.get_right()
+        if req['session']['new']:
+            text = self.texts.get_start()
+        else:
+            text = self.texts.get_right()
 
         res = {
-            "version": req.json['version'],
-            "session": req.json['session'],
+            "version": req['version'],
+            "session": req['session'],
             "response": {
                 "text": text,
                 "card": self._make_card(img_id, text),
@@ -96,7 +95,7 @@ def hello_world():
 
 @app.route("/", methods=['POST'])
 def main():
-    return master.reply(request)
+    return master.reply(request.json)
 
 
 if __name__ == "__main__":
