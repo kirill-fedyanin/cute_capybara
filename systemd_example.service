@@ -1,0 +1,13 @@
+[Unit]
+Description=uWSGI instance to serve cute capybaras
+After=network.target
+
+[Service]
+User=ponyo
+Group=www-data
+WorkingDirectory=/home/ponyo/apps/cute_capybara
+Environment="PATH=/home/ponyo/apps/cute-capybara/cute_capybara_env/bin"
+ExecStart=/home/ponyo/apps/cute-capybara/cute_capybara_env/bin/uwsgi --ini cute_capybara.ini
+
+[Install]
+WantedBy=multi-user.target
