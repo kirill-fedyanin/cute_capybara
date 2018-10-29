@@ -3,7 +3,6 @@
 from __future__ import unicode_literals
 
 import json
-import logging
 from flask import Flask, request
 
 from lib import BabyStorage
@@ -11,55 +10,24 @@ from lib import BabyStorage
 app = Flask(__name__)
 
 
-logging.basicConfig(level=logging.DEBUG)
-
 # Хранилище данных о сессиях.
 sessionStorage = {}
-
-
-def button():
-    return {
-        "text": "Mi-mi-mi",
-        "url": "http://fedyanin.me/",
-        "payload": {}
-    }
 
 
 class Master:
     def __init__(self):
         pass
 
-    def reply(self, request_json, response):
-
-        # response['response']['text'] = 'You are cute!'
-        response['response']['card'] = self._make_card("965417/d8a1988af5c2a38ba693")
-
-    def _make_card(self, image_id):
-        return {
-            "type": "BigImage",
-            "image_id": image_id,
-        }
-        # "title": "Capybara",
-        # "description": "Can you find someone more cute?",
-
-
-class Requester:
-    def __init__(self):
-        self.master = Master()
-
-    def make_request(self):
-        pass
-
-    def parse(self):
+    def reply(self, request_):
+        img_id = "965417/d8a1988af5c2a38ba693"
         response = {
-            "version": request.json['version'],
-            "session": request.json['session'],
+            "version": request_.json['version'],
+            "session": request_.json['session'],
             "response": {
-                "end_session": False
+                "end_session": False,
+                "card": self._make_card(img_id)
             }
         }
-
-        self.master.reply(request.json, response)
 
         return json.dumps(
             response,
@@ -67,8 +35,15 @@ class Requester:
             indent=2
         )
 
+    @staticmethod
+    def _make_card(image_id):
+        return {
+            "type": "BigImage",
+            "image_id": image_id,
+        }
 
-requester = Requester()
+
+master = Master()
 
 
 @app.route('/', methods=['GET'])
@@ -78,8 +53,7 @@ def hello_world():
 
 @app.route("/", methods=['POST'])
 def main():
-    response = requester.parse()
-    return response
+    return master.reply(request)
 
 
 if __name__ == "__main__":
