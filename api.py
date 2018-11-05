@@ -1,7 +1,7 @@
 # coding: utf-8
 # Импортирует поддержку UTF-8.
 from __future__ import unicode_literals
-from random import sample
+from random import choice
 
 import json
 from flask import Flask, request
@@ -49,38 +49,45 @@ class CutieProvider:
         self.cuties = self._cuties_list()
 
     def get_cutie(self):
-        cutie = sample(self.cuties)
+        cutie = choice(self.cuties)
         return cutie
 
     @staticmethod
     def _cuties_list():
-        return {
-            1: {
+        return [
+            {
                 'id': 1,
                 'image_id': "965417/d8a1988af5c2a38ba693",
-                'names': 'Капибара'
-            }
-        }
+                'names': ['Капибара']
+            },
+            {
+                'id': 2,
+                'image_id': "965417/e509419a31cfecf7ff5a",
+                'names': ['Бобёр', 'Бобр', 'Бобер']
+            },
+        ]
 
 
 class Master:
     def __init__(self):
         self.texts = TextBook()
+        self.zoo = CutieProvider()
 
     def _start_message(self):
-        pass
+        text = self.texts.get_start()
+        suggests_ = [{"title": "Начнём", "hide": True}]
+        return text, suggests_
 
     def reply(self, req):
-        image_id =
+        cutie = self.zoo.get_cutie()
         suggests = []
         card = None
 
         if req['session']['new']:
-            text = self.texts.get_start()
-            suggests.append({"title": "Начнём", "hide": True})
+            text, suggests = self._start_message()
         else:
             text = self.texts.get_right()
-            card = self._make_card(image_id, text)
+            card = self._make_card(cutie['image_id'], text)
 
         res = {
             "version": req['version'],
@@ -140,6 +147,3 @@ def main():
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0')
-
-
-
