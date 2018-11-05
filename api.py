@@ -1,6 +1,7 @@
 # coding: utf-8
 # Импортирует поддержку UTF-8.
 from __future__ import unicode_literals
+from random import sample
 
 import json
 from flask import Flask, request
@@ -18,45 +19,84 @@ class TextBook:
     def get_start(self):
         return(
             'Привет. Правила простые - я буду показывать тебе картинки, а ты должен угадать имя животного на них.'
-            'Ну что, попробуем? Как называет вот этот зверь?'
+            'Ну что, попробуем?'
         )
 
     def get_right(self):
-        return(
-            'Отлично!\n\nА теперь попробуй отгадать этого'
-        )
+        return 'Отлично! Как называется зверь на этой фотографии?'
 
     def get_wrong(self):
-        return(
-            'Хм, неверно, попробуй ещё'
-        )
+        return 'Хм, неверно, попробуй ещё'
 
     def win(self):
-        return(
-            'Ты отгадал всех-превсех. Держи медаль'
-        )
+        return 'Ты отгадал всех-превсех. Держи медаль'
+
+
+class User:
+    def __init__(self, id, new=False):
+        self.id = id
+        if new:
+            self._user = {}
+        else:
+            self._user = sessionStorage[id]
+
+    def dump(self):
+        sessionStorage[id] = self._user
+
+
+class CutieProvider:
+    def __init__(self):
+        self.cuties = self._cuties_list()
+
+    def get_cutie(self):
+        cutie = sample(self.cuties)
+        return cutie
+
+    @staticmethod
+    def _cuties_list():
+        return {
+            1: {
+                'id': 1,
+                'image_id': "965417/d8a1988af5c2a38ba693",
+                'names': 'Капибара'
+            }
+        }
 
 
 class Master:
     def __init__(self):
         self.texts = TextBook()
 
+    def _start_message(self):
+        pass
+
     def reply(self, req):
-        img_id = "965417/d8a1988af5c2a38ba693"
+        image_id =
+        suggests = []
+        card = None
+
         if req['session']['new']:
             text = self.texts.get_start()
+            suggests.append({"title": "Начнём", "hide": True})
         else:
             text = self.texts.get_right()
+            card = self._make_card(image_id, text)
 
         res = {
             "version": req['version'],
             "session": req['session'],
             "response": {
                 "text": text,
-                "card": self._make_card(img_id, text),
                 "end_session": False,
             }
         }
+
+        if suggests:
+            res['response']['buttons'] = suggests
+
+        if card:
+            res['response']['card'] = card
+
 
         return json.dumps(
             res,
